@@ -1,0 +1,63 @@
+---
+title: "R Series 6: Financial Data Analysis with R"
+author: "Dr. Kam Tin Seong"
+format: html
+editor: visual
+---
+
+```{r}
+pacman::p_load(tidyquant, timetk, tidyverse, knitr)
+```
+
+```{r}
+company <- read_csv("data/SGCompany.csv")
+```
+
+```{r}
+Stock_daily <- company %>%
+  select(Symbol) %>%
+  tq_get(get = "stock.prices", 
+         from = "2020-01-01", 
+         to = "2023-12-31") 
+```
+
+```{r}
+Stock_data <- Stock_daily %>%
+  left_join(company)
+```
+
+```{r}
+Stock_data %>%
+  filter(Name == "DBS Group") %>%
+  ggplot(aes(x = date, y = close)) +
+    geom_line() +
+    labs(title = "DBS Group Holdings Ltd (DBSDF) Daily Stock Price", 
+         y = "Closing Price", x = "") + 
+    theme_tq()
+```
+
+```{r}
+Stock_data %>%
+  group_by(Name) %>%
+  plot_time_series(date, close,
+                   .facet_ncol   = 2,
+                   .facet_scales = "free",
+                   .interactive  = TRUE)
+```
+
+```{r}
+end <- as_date("2023-12-31")
+start <- end - weeks(4)
+Stock_data %>%
+  filter(Name == "DBS Group") %>%
+  filter(date >= start - days(2 * 15)) %>%
+  ggplot(aes(x=date, y=close)) +
+  geom_candlestick(aes(open=open,
+                       high=high,
+                       low=low,
+                       close=close)) +
+  labs(title =  "Daily stock prices of DBS Group") +
+  coord_x_date(xlim = c(start, end)) + 
+  theme_tq()
+
+```

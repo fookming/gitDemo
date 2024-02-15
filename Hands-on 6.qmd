@@ -1,7 +1,11 @@
 ---
 title: "R Series 6: Financial Data Analysis with R"
-author: "Dr. Kam Tin Seong"
+author: "Ee Fook Ming"
 format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
 editor: visual
 ---
 
